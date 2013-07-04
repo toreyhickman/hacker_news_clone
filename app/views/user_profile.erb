@@ -1,0 +1,94 @@
+<div id="main">
+  
+  <div class="post_wrap">
+    <h3>
+        <%= @user.username %>
+    </h3>
+    <p>
+      Joined on <%= Date::MONTHNAMES[@user.created_at.month] %> <%= @user.created_at.day %> <%= @user.created_at.year %>
+    </p>
+  </div>
+      
+
+  <div class="comments_wrapper">
+    <h3>
+        Most Recent Posts
+    </h3>
+    <% if @posts.empty? %>
+      <div class="comment_wrap">
+        <p><%= @user.username %> has not posted any articles.</p>
+      </div>
+    <% end %>
+
+    <% @posts.each do |post| %>
+        <p><a href="/post/<%= post.id%>"><%= post.title %></a></p>
+    <% end %>
+  </div>
+
+
+  <div class="comments_wrapper">
+    <h3>
+        Most Recent Comments
+    </h3>
+    <% if @comments.empty? %>
+      <div class="comment_wrap">
+        <p><%= @user.username %> has not made any comments</p>
+      </div>
+    <% end %>
+
+    <% @comments.each do |comment| %>
+      <div class="comment_wrap">
+        <p><a href="/post/<%= comment.post_id%>"><%= comment.body %></a></p>
+        <p class="comment_datetime">
+          <%= "#{Date::MONTHNAMES[comment.created_at.month]} #{comment.created_at.day}, #{comment.created_at.year} at #{comment.created_at.hour}:#{comment.created_at.min}" %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+
+
+</div>
+
+
+
+
+
+<% if session[:user_id] %>
+  <div id="sidebar">
+    <p>Post an Article</p>
+    <form method="post" action="/create_post">
+      <input type="text" name="title" placeholder="Article Title">
+      <input type="text" name="url_link" value="http://">
+      <input type="submit" class="submit">
+    </form>
+  </div>
+<% else %>
+
+<div id="sidebar">
+    <p>Members</p>
+    <div id="login_errors">
+      <%= @login_errors if @login_errors %>
+    </div>
+    <form action="/" method="post">
+      <input type="text" name="username" placeholder="username">
+      <input type="password" name="password" placeholder="password">
+      <input type="submit" name="submit" value="Login" class="submit"> 
+    </form>
+    
+
+    <p>Visitors</p>
+    <div id="registration_errors">
+      <% if @registration_errors %>
+        <% @registration_errors.each do |error| %>
+          <%= error %>.
+        <% end %>
+      <% end %>
+    </div>
+    <form action="/register" method="post">
+      <input type="text" name="username" placeholder="username">
+      <input type="password" name="password" placeholder="password">
+      <input type="submit" name="submit" value="Register" class="submit"> 
+    </form>
+  </div>
+
+<% end %>

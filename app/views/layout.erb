@@ -15,9 +15,27 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script src="/js/application.js"></script>
 
-  <title></title>
+  <title>HN Clone</title>
 </head>
 <body>
-  <%= yield %>
+  
+  <header>
+    <div id="header_content">
+      <div id="title">
+        <a href="/">Hacker News Clone</a>
+      </div>
+
+      <% if session[:user_id] %>
+        <div id="logout">
+          <a href="/logout">logout</a>
+        </div>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="container">
+    <%= yield %>
+  </div>
+
 </body>
 </html>

@@ -1,23 +1,60 @@
-<div class="container">
-  <h1>Welcome to Sinatra!</h1>
-  <p>Hello, world!</p>
-
-  <table>
-    <tr>
-      <th>File Description</th>
-      <th>File Location</th>
-    </tr>
-    <tr>
-      <td>This view file</td>
-      <td><code><%= __FILE__.gsub(Sinatra::Application.root, '') %></code></td>
-    </tr>
-    <tr>
-      <td>The layout file</td>
-      <td><code><%= File.expand_path('../layout.erb', __FILE__).gsub(Sinatra::Application.root, '') %></code></td>
-    </tr>
-    <tr>
-      <td>The current controller</td>
-      <td><code><%= File.expand_path('../../controllers/index.rb', __FILE__).gsub(Sinatra::Application.root, '') %></code></td>
-    </tr>
-  </table>
+<div id="main">
+  
+  <% @post.each do |post| %>
+    <div class="post_wrap">
+      <h3>
+        <a href="/post/<%= post.id %>">
+          <%= post.title %>
+        </a>
+      </h3>
+      <p>
+        Posted on <%= Date::MONTHNAMES[post.created_at.month] %> <%= post.created_at.day %> <%= post.created_at.year %>
+        by <a href="/user/<%= User.find(post.user_id).id %>"><%= User.find(post.user_id).username %></a>.
+      </p>
+    </div>
+  <% end %>
 </div>
+
+
+
+
+
+<% if session[:user_id] %>
+  <div id="sidebar">
+    <p>Post an Article</p>
+    <form method="post" action="/create_post">
+      <input type="text" name="title" placeholder="Article Title">
+      <input type="text" name="url_link" value="http://">
+      <input type="submit" class="submit">
+    </form>
+  </div>
+<% else %>
+
+<div id="sidebar">
+    <p>Members</p>
+    <div id="login_errors">
+      <%= @login_errors if @login_errors %>
+    </div>
+    <form action="/" method="post">
+      <input type="text" name="username" placeholder="username">
+      <input type="password" name="password" placeholder="password">
+      <input type="submit" name="submit" value="Login" class="submit"> 
+    </form>
+    
+
+    <p>Visitors</p>
+    <div id="registration_errors">
+      <% if @registration_errors %>
+        <% @registration_errors.each do |error| %>
+          <%= error %>.
+        <% end %>
+      <% end %>
+    </div>
+    <form action="/register" method="post">
+      <input type="text" name="username" placeholder="username">
+      <input type="password" name="password" placeholder="password">
+      <input type="submit" name="submit" value="Register" class="submit"> 
+    </form>
+  </div>
+
+<% end %>
